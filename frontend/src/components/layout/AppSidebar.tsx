@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react'
 import {
   BarChart3,
   ChevronUp,
@@ -34,7 +35,14 @@ import {
 import { useLogout } from '@/features/auth/hooks'
 import { useAuthStore } from '@/stores/auth-store'
 
-const mainNav = [
+type NavItem = {
+  title: string
+  url: string
+  icon: LucideIcon
+  disabled?: boolean
+}
+
+const mainNav: NavItem[] = [
   {
     title: 'Tableau de bord',
     url: '/',
@@ -42,7 +50,7 @@ const mainNav = [
   },
 ]
 
-const managementNav = [
+const managementNav: NavItem[] = [
   {
     title: 'Utilisateurs',
     url: '/users',
@@ -69,7 +77,7 @@ const managementNav = [
   },
 ]
 
-const analyticsNav = [
+const analyticsNav: NavItem[] = [
   {
     title: 'Rapports',
     url: '/reports',
@@ -78,11 +86,11 @@ const analyticsNav = [
   },
 ]
 
-function getInitials(firstName, lastName) {
+function getInitials(firstName?: string, lastName?: string) {
   return `${firstName?.[0] ?? ''}${lastName?.[0] ?? ''}`.toUpperCase() || 'U'
 }
 
-function NavItems({ items }) {
+function NavItems({ items }: { items: NavItem[] }) {
   const location = useLocation()
 
   return (

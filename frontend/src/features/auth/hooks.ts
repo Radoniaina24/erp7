@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import { useAuthStore } from '../../stores/auth-store'
+import { useAuthStore } from '@/stores/auth-store'
 import { authApi, authKeys } from './api'
 
 export function useMe() {

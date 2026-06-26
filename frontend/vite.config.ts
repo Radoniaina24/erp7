@@ -1,15 +1,15 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { createRequire } from 'node:module'
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url))
 const monorepoRoot = path.resolve(rootDir, '..')
 const require = createRequire(import.meta.url)
 
-function resolvePackage(packageName) {
+function resolvePackage(packageName: string) {
   return path.dirname(
     require.resolve(`${packageName}/package.json`, {
       paths: [rootDir, monorepoRoot],
@@ -17,7 +17,6 @@ function resolvePackage(packageName) {
   )
 }
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {

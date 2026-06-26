@@ -17,12 +17,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useLogin } from '@/features/auth/hooks'
-import { loginSchema } from '@/features/auth/schemas/login-schema'
+import {
+  loginSchema,
+  type LoginFormValues,
+} from '@/features/auth/schemas/login-schema'
 
 const LOGIN_BACKGROUND_IMAGE =
   'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1920&q=80'
 
-function FieldError({ message }) {
+function FieldError({ message }: { message?: string }) {
   if (!message) return null
 
   return (
@@ -58,8 +61,8 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({
-    resolver: zodResolver(loginSchema),
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema as never),
     defaultValues: {
       email: '',
       password: '',
@@ -68,7 +71,7 @@ export default function LoginPage() {
 
   const isLoading = isSubmitting || login.isPending
 
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: LoginFormValues) => {
     try {
       await login.mutateAsync(values)
       navigate('/', { replace: true })

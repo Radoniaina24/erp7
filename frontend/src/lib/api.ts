@@ -1,14 +1,23 @@
 const API_BASE = import.meta.env.VITE_API_URL ?? '/api'
 
 export class ApiError extends Error {
-  constructor(message, status) {
+  status: number
+
+  constructor(message: string, status: number) {
     super(message)
     this.name = 'ApiError'
     this.status = status
   }
 }
 
-export async function apiRequest(path, options = {}) {
+interface ApiErrorBody {
+  message?: string | string[]
+}
+
+export async function apiRequest<T>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     credentials: 'include',
     headers: {
@@ -18,16 +27,16 @@ export async function apiRequest(path, options = {}) {
     ...options,
   })
 
-  const data = await response.json().catch(() => null)
+  const data = (await response.json().catch(() => null)) as ApiErrorBody | null
 
   if (!response.ok) {
     const message =
-      data?.message ??
+      (typeof data?.message === 'string' ? data.message : null) ??
       (Array.isArray(data?.message) ? data.message.join(', ') : null) ??
       'Une erreur est survenue'
 
     throw new ApiError(message, response.status)
   }
 
-  return data
+  return data as T
 }
