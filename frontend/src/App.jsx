@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 import { ProtectedRoute, PublicRoute } from './components/auth-routes'
 import DashboardPage from './pages/DashboardPage'
 import LoginPage from './pages/LoginPage'
@@ -12,7 +13,9 @@ export default function App() {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<DashboardPage />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/" element={<DashboardPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
