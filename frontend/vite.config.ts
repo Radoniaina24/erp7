@@ -58,6 +58,7 @@ export default defineConfig({
       'react-hook-form',
       'zod',
       '@hookform/resolvers/zod',
+      'recharts',
     ],
   },
 })
