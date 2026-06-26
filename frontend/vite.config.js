@@ -56,6 +56,9 @@ export default defineConfig({
       'class-variance-authority',
       'lucide-react',
       'radix-ui',
+      'react-hook-form',
+      'zod',
+      '@hookform/resolvers/zod',
     ],
   },
 })

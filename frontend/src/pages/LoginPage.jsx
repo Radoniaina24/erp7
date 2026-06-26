@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,24 +13,39 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { cn } from '@/lib/utils'
 import { useLogin } from '@/features/auth/hooks'
+import { loginSchema } from '@/features/auth/schemas/login-schema'
+
+function FieldError({ message }) {
+  if (!message) return null
+
+  return <p className="text-sm text-destructive">{message}</p>
+}
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const login = useLogin()
-
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = async (event) => {
-    event.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  })
 
+  const onSubmit = async (values) => {
     try {
-      await login.mutateAsync({ email, password })
+      await login.mutateAsync(values)
       navigate('/', { replace: true })
     } catch {
-      // L'erreur est affichée via login.error
+      // L'erreur API est affichée via login.error
     }
   }
 
@@ -55,18 +72,19 @@ export default function LoginPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="admin@erp.com"
+                  aria-invalid={!!errors.email}
+                  className={cn(errors.email && 'border-destructive')}
+                  {...register('email')}
                 />
+                <FieldError message={errors.email?.message} />
               </div>
 
               <div className="space-y-2">
@@ -76,12 +94,10 @@ export default function LoginPage() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
-                    required
-                    minLength={8}
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
                     placeholder="••••••••"
-                    className="pr-10"
+                    aria-invalid={!!errors.password}
+                    className={cn('pr-10', errors.password && 'border-destructive')}
+                    {...register('password')}
                   />
                   <Button
                     type="button"
@@ -98,6 +114,7 @@ export default function LoginPage() {
                     {showPassword ? <EyeOff /> : <Eye />}
                   </Button>
                 </div>
+                <FieldError message={errors.password?.message} />
               </div>
 
               {login.error && (
@@ -110,9 +127,11 @@ export default function LoginPage() {
                 type="submit"
                 className="w-full"
                 size="lg"
-                disabled={login.isPending}
+                disabled={isSubmitting || login.isPending}
               >
-                {login.isPending ? 'Connexion...' : 'Se connecter'}
+                {isSubmitting || login.isPending
+                  ? 'Connexion...'
+                  : 'Se connecter'}
               </Button>
             </form>
           </CardContent>
