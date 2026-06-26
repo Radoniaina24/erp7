@@ -1,6 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLogin } from '../features/auth/hooks'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useLogin } from '@/features/auth/hooks'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -21,79 +31,73 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4">
+    <div className="dark flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <p className="text-sm font-medium uppercase tracking-widest text-indigo-400">
+          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
             ERP
           </p>
-          <h1 className="mt-2 text-3xl font-semibold text-white">
+          <h1 className="mt-2 text-3xl font-semibold text-foreground">
             Connexion
           </h1>
-          <p className="mt-2 text-slate-400">
+          <p className="mt-2 text-muted-foreground">
             Accédez à votre espace de gestion
           </p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="rounded-2xl border border-slate-800 bg-slate-900 p-8 shadow-xl"
-        >
-          <div className="space-y-5">
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-2 block text-sm font-medium text-slate-300"
+        <Card>
+          <CardHeader>
+            <CardTitle>Identifiants</CardTitle>
+            <CardDescription>
+              Entrez votre email et mot de passe pour continuer
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="admin@erp.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="••••••••"
+                />
+              </div>
+
+              {login.error && (
+                <p className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                  {login.error.message}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                className="w-full"
+                size="lg"
+                disabled={login.isPending}
               >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                placeholder="admin@erp.com"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-2 block text-sm font-medium text-slate-300"
-              >
-                Mot de passe
-              </label>
-              <input
-                id="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                minLength={8}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
-                placeholder="••••••••"
-              />
-            </div>
-          </div>
-
-          {login.error && (
-            <p className="mt-4 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
-              {login.error.message}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={login.isPending}
-            className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {login.isPending ? 'Connexion...' : 'Se connecter'}
-          </button>
-        </form>
+                {login.isPending ? 'Connexion...' : 'Se connecter'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

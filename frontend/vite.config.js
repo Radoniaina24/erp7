@@ -22,6 +22,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
+      '@': path.resolve(rootDir, './src'),
       react: resolvePackage('react'),
       'react-dom': resolvePackage('react-dom'),
       '@tanstack/react-query': resolvePackage('@tanstack/react-query'),
@@ -50,6 +51,11 @@ export default defineConfig({
       '@tanstack/react-query',
       'react-router-dom',
       'zustand',
+      'clsx',
+      'tailwind-merge',
+      'class-variance-authority',
+      'lucide-react',
+      'radix-ui',
     ],
   },
 })
